@@ -1,0 +1,33 @@
+{
+    "name": "@hydrooj/contribution",
+    "version": "0.1.0",
+    "description": "Codeforces-style contribution graph on the HydroOJ user profile — daily solved heatmap with year selector plus all-time / last-year / last-month solved counts and streaks.",
+    "main": "index.ts",
+    "author": "racel W",
+    "license": "AGPL-3.0-or-later",
+    "files": [
+        "index.ts",
+        "templates/",
+        "README.md",
+        "LICENSE"
+    ],
+    "hydro": {
+        "cli": false
+    },
+    "scripts": {
+        "check": "esbuild index.ts --bundle --platform=node --format=cjs --external:hydrooj --outfile=/dev/null",
+        "pack": "npm pack"
+    },
+    "devDependencies": {
+        "esbuild": "^0.23.0"
+    },
+    "keywords": [
+        "hydro",
+        "hydrooj",
+        "plugin",
+        "addon",
+        "contribution-graph",
+        "heatmap",
+        "profile"
+    ]
+}

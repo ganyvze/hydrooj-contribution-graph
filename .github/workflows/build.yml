@@ -1,0 +1,48 @@
+name: build
+
+# CI for code changes. Documentation-only edits (**.md, LICENSE, .gitignore)
+# do NOT trigger a build, to avoid wasting Actions minutes.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - '.gitignore'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - '.gitignore'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dev dependencies
+        run: npm install --no-package-lock
+
+      - name: Syntax / transpile check (esbuild)
+        run: npm run check
+
+      - name: Package addon tarball
+        id: pack
+        run: |
+          FILE=$(npm pack | tail -1)
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+          echo "Packed: $FILE"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: contribution-addon
+          path: ${{ steps.pack.outputs.file }}
+          if-no-files-found: error
