@@ -1,76 +1,49 @@
-# @hydrooj/contribution
+# @hydrooj/contribution-graph
 
-A Codeforces-style **contribution graph** for HydroOJ, shown directly on every
-user profile page (`/user/:uid`).
+为 HydroOJ 用户主页添加一个类似 **Codeforces 的贡献图（contribution graph）**，
+直接展示在每个用户的个人主页（`/user/:uid`）上。
 
 <p>
-  <img width="920" alt="contribution graph on the user profile (light)" src="docs/screenshot-light.png" />
+  <img width="920" alt="用户主页上的贡献图（浅色主题）" src="docs/screenshot-light.png" />
 </p>
 <p>
-  <img width="920" alt="contribution graph on the user profile (dark)" src="docs/screenshot-dark.png" />
+  <img width="920" alt="用户主页上的贡献图（深色主题）" src="docs/screenshot-dark.png" />
 </p>
 
-## What it shows
+## 功能
 
-A per-year solved-problems heatmap (with a year selector) plus the six
-Codeforces profile stats:
+以卡片形式展示在个人主页下方，包含一张可按年份查看的每日解题热力图（带年份下拉选择），
+以及六项与 Codeforces 一致的统计数据：
 
-- *N* problems solved for all time
-- *N* problems solved for the last year
-- *N* problems solved for the last month
-- *N* days in a row max.
-- *N* days in a row for the last year
-- *N* days in a row for the last month
+- 历史累计解题数
+- 最近一年解题数
+- 最近一月解题数
+- 最长连续解题天数
+- 最近一年最长连续天数
+- 最近一月最长连续天数
 
-"Solved" means a **distinct problem** — a problem is counted once, on the day of
-its first accepted submission.
+其中「解题」按**去重后的题目**计算：同一道题只在其**首次通过（AC）**的那天计入一次。
 
-## How it stays fast
+热力图会自动缩放以适应卡片宽度（不出现横向滚动条），并完整适配 ui-default 的浅色与深色主题。
 
-The one potentially heavy query is a single aggregation over the `record`
-collection that collapses all of a user's AC submissions into one row per solved
-problem (its earliest AC). The result is cached per `(domain, user)` in
-`contribution.cache` with a TTL (default 10 min), and invalidated the moment the
-user gets a new AC (`record/judge`). A dedicated index
-(`domainId, uid, status, pid`) keeps the aggregation scoped to that user's AC
-records. All the light work — windowed counts, streaks and the calendar grid —
-is computed from the tiny cached day-map, never from the database.
-
-So a profile view costs **one indexed `findOne`** in the common case, and at most
-**one aggregation per user per TTL window**.
-
-## Install
+## 安装
 
 ```bash
-hydrooj addon add /abs/path/to/hydro-contribution
-pm2 restart hydrooj    # or however you run hydrooj
+hydrooj addon add /绝对路径/hydro-contribution-graph
+pm2 restart hydrooj    # 或使用你自己的方式重启 hydrooj
 ```
 
-Or just run `./deploy.sh` on the HydroOJ host.
+也可以直接在 HydroOJ 所在主机上运行 `./deploy.sh`。
 
-No build step: HydroOJ transpiles `index.ts` at load time and auto-discovers
-`templates/`.
+无需构建步骤：HydroOJ 会在加载时自动转译 `index.ts`，并自动发现 `templates/`。
 
-## Configuration (optional)
+## 配置（可选）
 
-System settings (via the control panel / `SystemModel`):
+通过控制面板 / `SystemModel` 设置：
 
-- `contribution.timezone` — timezone used for day bucketing. Default
-  `Asia/Shanghai`.
-- `contribution.cacheTtl` — cache lifetime in milliseconds. Default `600000`.
+- `contribution.timezone` —— 用于按天分组的时区，默认 `Asia/Shanghai`。
+- `contribution.cacheTtl` —— 统计缓存的有效期（毫秒），默认 `600000`。
 
-## How it hooks in
-
-The graph renders as its **own card directly below the profile** (not as a tab).
-Since Hydro's only built-in profile extension slot lives inside the tab list,
-this addon ships a faithful copy of `user_detail.html` that adds one line —
-`{% include "partials/contribution_card.html" %}` — right after the profile
-section. The data it needs is attached to the response via the
-`handler/after/UserDetail` event, so **the core handler is not touched**.
-
-> Note: because it overrides `user_detail.html`, re-sync that template if you
-> upgrade HydroOJ to a version whose profile page changed (built against 5.0.4).
-
-## License
+## 许可证
 
 AGPL-3.0-or-later.

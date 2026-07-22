@@ -43,6 +43,6 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: contribution-addon
+          name: contribution-graph-addon
           path: ${{ steps.pack.outputs.file }}
           if-no-files-found: error
