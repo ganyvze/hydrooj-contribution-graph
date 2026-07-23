@@ -1,6 +1,6 @@
 {
     "name": "@hydrooj/contribution-graph",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Codeforces-style contribution graph on the HydroOJ user profile — daily solved heatmap with year selector plus all-time / last-year / last-month solved counts and streaks.",
     "main": "index.ts",
     "author": "racel W",

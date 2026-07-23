@@ -12,7 +12,7 @@
         --cg-cell-border: rgba(27,31,35,.06);
         --cg-panel-bg: #f6f8fa; --cg-panel-border: #d0d7de;
         --cg-input-bg: #fff; --cg-input-border: #d0d7de;
-        --cg-today: #d1242f; --cg-hover: rgba(31,35,40,.4); --cg-divider: #e4e7eb;
+        --cg-hover: rgba(31,35,40,.4); --cg-divider: #e4e7eb;
         font-size: 13px; color: var(--cg-text);
       }
       .theme--dark .cf-cg {
@@ -21,7 +21,7 @@
         --cg-cell-border: rgba(240,246,252,.1);
         --cg-panel-bg: #161b22; --cg-panel-border: #3d444d;
         --cg-input-bg: #21262d; --cg-input-border: #3d444d;
-        --cg-today: #f78166; --cg-hover: rgba(240,246,252,.45); --cg-divider: #30363d;
+        --cg-hover: rgba(240,246,252,.45); --cg-divider: #30363d;
       }
 
       .cf-cg__stats {
@@ -66,7 +66,6 @@
       .cf-cg__day--l2 { background: var(--cg-l2); }
       .cf-cg__day--l3 { background: var(--cg-l3); }
       .cf-cg__day--l4 { background: var(--cg-l4); }
-      .cf-cg__day--today { box-shadow: inset 0 0 0 1.5px var(--cg-today); }
       .cf-cg__legend { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 12px; font-size: 11px; color: var(--cg-muted); }
       .cf-cg__legend i { width: var(--cg-cell); height: var(--cg-cell); border-radius: 2px; display: inline-block; background: var(--cg-empty); box-shadow: inset 0 0 0 1px var(--cg-cell-border); }
       .cf-cg__legend i.cf-cg__day--l1 { background: var(--cg-l1); } .cf-cg__legend i.cf-cg__day--l2 { background: var(--cg-l2); }
@@ -149,7 +148,6 @@
       function level(c) { return !c ? 0 : (c === 1 ? 1 : (c === 2 ? 2 : (c === 3 ? 3 : 4))); }
       function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
       function tpl(s, a) { return s.replace('{0}', a[0]).replace('{1}', a.length > 1 ? a[1] : ''); }
-      var today = fmt(new Date());
 
       function render(year) {
         year = parseInt(year, 10);
@@ -167,7 +165,7 @@
             var inYear = d.getFullYear() === year;
             var c = inYear ? (days[key] || 0) : -1;
             if (inYear && c > 0) total += c;
-            week.push({ key: key, count: c, month: d.getMonth(), date: d.getDate(), today: key === today });
+            week.push({ key: key, count: c, month: d.getMonth(), date: d.getDate() });
             d.setDate(d.getDate() + 1);
           }
           weeks.push(week);
@@ -195,7 +193,7 @@
             if (cell.count < 0) { html += '<span class="cf-cg__day cf-cg__day--pad"></span>'; continue; }
             var lv = level(cell.count);
             var tip = cell.count > 0 ? tpl(tipN, [cell.count, cell.key]) : tpl(tip0, [cell.key]);
-            html += '<span class="cf-cg__day cf-cg__day--l' + lv + (cell.today ? ' cf-cg__day--today' : '') + '" title="' + esc(tip) + '"></span>';
+            html += '<span class="cf-cg__day cf-cg__day--l' + lv + '" title="' + esc(tip) + '"></span>';
           }
           html += '</div>';
         }
