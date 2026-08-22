@@ -23,11 +23,17 @@
 ## 安装
 
 ```bash
-hydrooj addon add /绝对路径/hydro-contribution-graph
-pm2 restart hydrooj    # 或使用你自己的方式重启 hydrooj
+cd /root/.hydro/addons
+git clone https://github.com/ganyvze/hydrooj-contribution-graph
+hydrooj addon add /root/.hydro/addons/hydrooj-contribution-graph
+pm2 restart hydrooj
 ```
 
-也可以直接在 HydroOJ 所在主机上运行 `./deploy.sh`。
+一键安装：
+
+```bash
+cd /root/.hydro/addons && git clone https://github.com/ganyvze/hydrooj-contribution-graph && hydrooj addon add /root/.hydro/addons/hydrooj-contribution-graph && pm2 restart hydrooj
+```
 
 ## 配置（可选）
 
@@ -35,7 +41,3 @@ pm2 restart hydrooj    # 或使用你自己的方式重启 hydrooj
 
 - `contribution.timezone` —— 用于按天分组的时区，默认 `Asia/Shanghai`。
 - `contribution.cacheTtl` —— 统计缓存的有效期（毫秒），默认 `600000`。
-
-## 许可证
-
-AGPL-3.0-or-later.

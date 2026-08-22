@@ -1,34 +1,6 @@
-/* eslint-disable no-await-in-loop */
 import {
     Context, db, Handler, moment, RecordModel, STATUS, SystemModel,
 } from 'hydrooj';
-
-// ---------------------------------------------------------------------------
-// @hydrooj/contribution
-//
-// Adds a Codeforces-style contribution graph to the user profile page
-// (/user/:uid). The core `user_detail.html` template already exposes an
-// extension slot:
-//   {% for page in findSubModule('partials/user_detail/') %}{% include page %}{% endfor %}
-// so shipping templates/partials/user_detail/contribution.html is enough to get
-// it rendered — no core template is overridden. Data for that template is
-// attached to the response by hooking `handler/after/UserDetail`.
-//
-// Performance model (this is the part the spec cares about):
-//   * The expensive query is a single aggregation over the `record` collection
-//     that reduces every AC submission to one row per distinct problem
-//     (its FIRST accepted time). Result size == number of solved problems
-//     (hundreds), never the number of submissions.
-//   * That result is cached per (domainId, uid) in `contribution.cache` with a
-//     TTL. A profile view therefore triggers at most one aggregation per user
-//     per TTL window; every other view is a single indexed findOne.
-//   * `record/judge` marks a user's cache stale on a new AC so a freshly solved
-//     problem shows up on the next view without waiting for the TTL.
-//   * A dedicated compound index makes the aggregation touch only that user's
-//     AC records.
-//   * The cheap per-request work (windowed counts + streaks + the year grid) is
-//     computed in JS from the tiny cached day-map, so it never hits the DB.
-// ---------------------------------------------------------------------------
 
 const CACHE_COLL = 'contribution.cache';
 const DEFAULT_TTL = 10 * 60 * 1000; // 10 minutes

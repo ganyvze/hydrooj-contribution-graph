@@ -1,6 +1,0 @@
-node_modules/
-dist/
-*.tgz
-*.log
-.DS_Store
-__metadata__

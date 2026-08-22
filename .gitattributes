@@ -1,3 +1,0 @@
-# Report this project as TypeScript on GitHub. The HTML templates are view code,
-# not the language the addon is written in, so exclude them from language stats.
-*.html linguist-detectable=false
